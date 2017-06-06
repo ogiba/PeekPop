@@ -20,6 +20,8 @@ open class PeekPop: NSObject {
     /// Fallback to Apple's peek and pop implementation for devices that support it.
     fileprivate var forceTouchDelegate: ForceTouchDelegate?
     
+    open var useViewControllerPreview: Bool = false
+    
     //MARK: Lifecycle
     
     /**
@@ -58,7 +60,12 @@ open class PeekPop: NSObject {
         
         return previewing
     }
-        
+    
+    open func registerForPreviewing(useControllerPreview isController: Bool, withDelegate delegate: PeekPopPreviewingDelegate, at sourceView: UIView) ->PreviewingContext {
+        self.useViewControllerPreview = isController
+        return self.registerForPreviewingWithDelegate(delegate, sourceView: sourceView)
+    }
+    
     /// Check whether force touch is available
     func isForceTouchCapable() -> Bool {
         if #available(iOS 9.0, *) {

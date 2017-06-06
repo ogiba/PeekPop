@@ -38,7 +38,14 @@ class PeekPopManager {
         }
         
         // Create PeekPopView
-        let view = PeekPopView()
+        let view: PeekPopView
+        
+        if peekPop.useViewControllerPreview {
+            view = PeekPopControllerView()
+        } else {
+            view = PeekPopView()
+        }
+        
         peekPopView = view
         
         // Take view controller screenshot
@@ -54,7 +61,12 @@ class PeekPopManager {
 
         // Take target view controller screenshot
         targetVC.view.frame = viewController.view.bounds
-        peekPopView?.targetViewControllerScreenshot = targetVC.view.screenshotView(false)
+        
+        if let _view = peekPopView as? PeekPopControllerView {
+            _view.targetVC = targetVC
+        } else {
+            peekPopView?.targetViewControllerScreenshot = targetVC.view.screenshotView(false)
+        }
         targetViewController = targetVC
         
         return true

@@ -139,9 +139,12 @@ class PeekPopView: UIView {
         // Commit target view controller
         else {
             targetPreviewView.frame = self.bounds
-            targetPreviewView.imageContainer.layer.cornerRadius = 0
+            self.changeLayer()
         }
-
+    }
+    
+    func changeLayer() {
+        targetPreviewView.imageContainer.layer.cornerRadius = 0
     }
         
 }
