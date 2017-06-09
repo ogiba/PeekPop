@@ -41,7 +41,7 @@ extension PeekPop: UIGestureRecognizerDelegate {
     }
 }
 
-extension PreviewingContext: Equatable {}
+extension PreviewingContext {}
 public func ==(lhs: PreviewingContext, rhs: PreviewingContext) -> Bool {
     return lhs.sourceView == rhs.sourceView
 }

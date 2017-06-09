@@ -14,17 +14,20 @@ class PeekPopManager {
     
     var viewController: UIViewController { get {return peekPop.viewController} }
     var targetViewController: UIViewController?
+    var delegate: PeekPopManagerDelegate?
     
-    fileprivate var peekPopView: PeekPopView?
-    fileprivate lazy var peekPopWindow: UIWindow = {
+    var peekPopView: PeekPopView?
+    lazy var peekPopWindow: UIWindow = {
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.windowLevel = UIWindowLevelAlert
-        window.rootViewController = UIViewController()
+        let viewController = PeekPopViewController()
+        window.rootViewController = viewController
         return window
     }()
 
     init(peekPop: PeekPop) {
         self.peekPop = peekPop
+        self.delegate = peekPop
     }
     
     //MARK: PeekPop
@@ -44,6 +47,13 @@ class PeekPopManager {
             view = PeekPopControllerView()
         } else {
             view = PeekPopView()
+        }
+        
+        view.delegate = self
+        view.showActionButton = peekPop.showActionButton
+        
+        if let title = context.delegate?.previewingContext?(context) {
+            view.button.setTitle(title, for: .normal)
         }
         
         peekPopView = view
@@ -68,7 +78,6 @@ class PeekPopManager {
             peekPopView?.targetViewControllerScreenshot = targetVC.view.screenshotView(false)
         }
         targetViewController = targetVC
-        
         return true
     }
     
@@ -87,13 +96,38 @@ class PeekPopManager {
     func blurImageWithRadius(_ image: UIImage, radius: CGFloat) -> UIImage? {
         return image.applyBlur(withRadius: CGFloat(radius), tintColor: nil, saturationDeltaFactor: 1.0, maskImage: nil)
     }
+    
+    func moveView(by point: CGPoint) {
+        peekPopView?.moveContainer(by: point)
+    }
+    
+    func moveView(byY y: CGFloat) {
+        peekPopView?.moveContainer(byX: 0, y: y)
+    }
+    
+    func anchorToTop(withValue value: CGFloat) {
+        peekPopView?.anchorToTop(withValue:  value)
+    }
+    
+    func changeButton(availability isAvailable: Bool){
+        if isAvailable {
+            peekPopView?.showButton()
+        } else {
+            peekPopView?.hideButton()
+        }
+    }
 
     
     /// Add window to heirarchy when peek pop begins
-    func peekPopBegan() {
+    func peekPopBegan(_ context: PreviewingContext?) {
         peekPopWindow.alpha = 0.0
         peekPopWindow.isHidden = false
         peekPopWindow.makeKeyAndVisible()
+        
+        if let _context = context, let _vc = peekPopWindow.rootViewController as? PeekPopViewController {
+//            _vc.orientation = _context.delegate?.previewingContext?(_context, peekPopWindow: peekPopWindow)
+            _context.delegate?.previewingContext?(_context, peekPopViewController: _vc)
+        }
         
         if let peekPopView = peekPopView {
             peekPopWindow.addSubview(peekPopView)
@@ -102,10 +136,9 @@ class PeekPopManager {
         peekPopView?.frame = UIScreen.main.bounds
         peekPopView?.didAppear()
         
-        UIView.animate(withDuration: 0.2, animations: { () -> Void in
+        UIView.animate(withDuration: 0.15, animations: { () -> Void in
             self.peekPopWindow.alpha = 1.0
         })
-        
     }
     
     /**
@@ -146,5 +179,29 @@ class PeekPopManager {
                 self.peekPopView = nil
         }) 
     }
+}
 
+extension PeekPopManager: PeekPopViewDelegate {
+    func peekPopView(actionTapped tapped: Bool) {
+        self.delegate?.peekPopManager(closeWithAction: true)
+    }
+
+    func peekPopView(initializeGestureRecognizerFor view: PeekPopView) -> Bool {
+        let gestureRecognizer = PeekPopViewGestureRecognizer(peekPopView: view, peekPopManager: self)
+        gestureRecognizer.sourceView = view
+        gestureRecognizer.delegate = view
+        view.addGestureRecognizer(gestureRecognizer)
+        return false
+    }
+    
+    func peekPopView(tapped button: UIButton) {
+        self.delegate?.peekPopManager(closeWithAction: true)
+        peekPopEnded()
+    }
+}
+
+protocol PeekPopManagerDelegate {
+    func peekPopManager(closeWithAction: Bool)
+    
+    func peekPopManager(changeProgress progress: CGFloat)
 }

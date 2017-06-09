@@ -21,6 +21,8 @@ open class PeekPop: NSObject {
     fileprivate var forceTouchDelegate: ForceTouchDelegate?
     
     open var useViewControllerPreview: Bool = false
+    open var showActionButton: Bool = false
+    open var buttonAction: (() -> ())?
     
     //MARK: Lifecycle
     
@@ -76,8 +78,22 @@ open class PeekPop: NSObject {
     
 }
 
+//MARK: PeekPopManager Delegate
+extension PeekPop: PeekPopManagerDelegate {
+    func peekPopManager(closeWithAction: Bool) {
+        if closeWithAction {
+            self.buttonAction?()
+        }
+    }
+    
+    func peekPopManager(changeProgress progress: CGFloat) {
+        self.peekPopGestureRecognizer?.targetProgress = progress
+    }
+}
+
 /// Previewing context struct
-open class PreviewingContext {
+@objc
+open class PreviewingContext: NSObject {
     /// Previewing delegate
     open weak var delegate: PeekPopPreviewingDelegate?
     /// Source view
@@ -90,10 +106,16 @@ open class PreviewingContext {
         self.sourceView = sourceView
         self.sourceRect = sourceView.frame
     }
+    
+    public override init() {
+        self.sourceView = UIView()
+        self.sourceRect = CGRect()
+    }
 }
 
 
 /// Peek pop previewing delegate
+@objc
 public protocol PeekPopPreviewingDelegate: class {
     
     /// Provide view controller for previewing context in location. If you return nil, a preview presentation will not be performed.
@@ -101,5 +123,11 @@ public protocol PeekPopPreviewingDelegate: class {
     
     /// Commit view controller when preview is committed.
     func previewingContext(_ previewingContext: PreviewingContext, commitViewController viewControllerToCommit: UIViewController)
+    
+    @objc optional func previewingContext(_ previewingContext: PreviewingContext) -> String?
+    
+    @objc optional func previewingContext(_ previewingContext: PreviewingContext, peekPopShown: Bool)
+    
+    @objc optional func previewingContext(_ previewingContext: PreviewingContext, peekPopViewController: PeekPopViewController)
 }
 

@@ -20,6 +20,10 @@ class PeekPopView: UIView {
     var sourceToCenterYDelta: CGFloat = 0.0
     var sourceToTargetWidthDelta: CGFloat = 0.0
     var sourceToTargetHeightDelta: CGFloat = 0.0
+    
+    var showActionButton: Bool = false
+    var delegate: PeekPopViewDelegate?
+    var gestureInitialized: Bool = false
 
     //MARK: Screenshots
     
@@ -40,6 +44,9 @@ class PeekPopView: UIView {
     var blurredBaseImageView = UIImageView()
     var blurredImageViewFirst = UIImageView()
     var blurredImageViewSecond = UIImageView()
+    
+    //Action button
+    var button = UIButton()
     
     // Overlay view
     var overlayView: UIView = {
@@ -94,7 +101,23 @@ class PeekPopView: UIView {
         sourceToCenterYDelta = self.bounds.size.height/2 - sourceViewCenter.y
         sourceToTargetWidthDelta = self.bounds.size.width - targePreviewPadding.width - sourceViewRect.size.width
         sourceToTargetHeightDelta = self.bounds.size.height - targePreviewPadding.height - sourceViewRect.size.height
-
+        
+        setupButton()
+    }
+    
+    func setupButton() {
+        guard showActionButton else {
+            button.isHidden = true
+            return
+        }
+        
+        button.isHidden = true
+        button.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.7)
+        button.frame = CGRect(x: 0.0, y: 0.0, width: sourceViewRect.size.width + sourceToTargetWidthDelta, height: 50.0)
+        button.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height + button.frame.size.height)
+        button.layer.cornerRadius = 15.0
+        button.setTitleColor(UIColor(red:0.00, green:0.53, blue:0.76, alpha:1.00), for: .normal)
+        button.addTarget(self, action: #selector(buttonAction(_:)), for: .touchUpInside)
     }
     
     func animateProgressiveBlur(_ progress: CGFloat) {
@@ -146,7 +169,72 @@ class PeekPopView: UIView {
     func changeLayer() {
         targetPreviewView.imageContainer.layer.cornerRadius = 0
     }
+}
+
+extension PeekPopView {
+    func moveContainer(by newPosition: CGPoint) {
+        targetPreviewView.imageContainer.frame.origin = newPosition
+    }
+    
+    func moveContainer(byX x: CGFloat, y: CGFloat) {
+        targetPreviewView.imageContainer.frame.origin = CGPoint(x: x, y: y)
+    }
+    
+    func anchorToTop(withValue value: CGFloat = 0) {
+        UIView.animate(withDuration: 0.4) {[weak self]() in
+            self?.targetPreviewView.imageContainer.frame.origin = CGPoint(x: 0, y: value)
+        }
         
+        initializeGestureRecognizer()
+    }
+    
+    func showButton() {
+        if showActionButton {
+            button.isHidden = false
+        }
+        
+        UIView.animate(withDuration: 0.4) {[weak self]() in
+            if let shouldShow =  self?.showActionButton, shouldShow {
+                if let _boundsHeight = self?.bounds.size.height, let _buttonHeight = self?.button.frame.size.height, let _buttonXPosition = self?.button.center.x {
+                    self?.button.center = CGPoint(x: _buttonXPosition, y: _boundsHeight - _buttonHeight + 10.0)
+                }
+            }
+        }
+    }
+    
+    func hideButton() {
+        guard showActionButton else {
+            button.isHidden = true
+            return
+        }
+        
+        UIView.animate(withDuration: 0.4) {[weak self]() in
+            if let _boundsHeight = self?.bounds.size.height, let _buttonHeight = self?.button.frame.size.height, let _buttonXPosition = self?.button.center.x {
+                self?.button.center = CGPoint(x: _buttonXPosition, y: _boundsHeight + _buttonHeight)
+            }
+        }
+    }
+    
+    func buttonAction(_ sender: UIButton) {
+        self.delegate?.peekPopView?(tapped: sender)
+    }
+}
+
+//MARK: UIGestureRecognizer
+extension PeekPopView: UIGestureRecognizerDelegate {
+    func initializeGestureRecognizer() {
+        if !gestureInitialized {
+            self.gestureInitialized = self.delegate?.peekPopView?(initializeGestureRecognizerFor: self) ?? false
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view == button {
+            return false
+        } else {
+            return true
+        }
+    }
 }
 
 class PeekPopTargetPreviewView: UIView {
@@ -178,4 +266,13 @@ class PeekPopTargetPreviewView: UIView {
         imageContainer.clipsToBounds = true
         imageContainer.addSubview(imageView)
     }
+}
+
+@objc
+protocol PeekPopViewDelegate: class {
+    func peekPopView(actionTapped tapped: Bool)
+    
+    @objc optional func peekPopView(initializeGestureRecognizerFor view: PeekPopView) -> Bool
+    
+    @objc optional func peekPopView(tapped button: UIButton)
 }

@@ -19,6 +19,8 @@
 		3453ABB71C7C3B24002768E2 /* PeekPopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3453ABB61C7C3B24002768E2 /* PeekPopTests.swift */; };
 		34800C201C8C32D8009929FA /* PeekPop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34800C1F1C8C32D8009929FA /* PeekPop.swift */; };
 		34800C281C8CAE30009929FA /* PeekPopGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34800C271C8CAE30009929FA /* PeekPopGestureRecognizer.swift */; };
+		6E6800231EE9255600F7B6A7 /* PeekPopViewGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6800221EE9255600F7B6A7 /* PeekPopViewGestureRecognizer.swift */; };
+		6E6800251EE97F0100F7B6A7 /* PeekPopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6800241EE97F0100F7B6A7 /* PeekPopViewController.swift */; };
 		6E683D181EE6BF6200839287 /* PeekPopControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E683D171EE6BF6200839287 /* PeekPopControllerView.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +50,8 @@
 		3453ABB81C7C3B24002768E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		34800C1F1C8C32D8009929FA /* PeekPop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPop.swift; sourceTree = "<group>"; };
 		34800C271C8CAE30009929FA /* PeekPopGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPopGestureRecognizer.swift; sourceTree = "<group>"; };
+		6E6800221EE9255600F7B6A7 /* PeekPopViewGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPopViewGestureRecognizer.swift; sourceTree = "<group>"; };
+		6E6800241EE97F0100F7B6A7 /* PeekPopViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPopViewController.swift; sourceTree = "<group>"; };
 		6E683D171EE6BF6200839287 /* PeekPopControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPopControllerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,8 +103,10 @@
 				343F63C81C94322A00F881BB /* PeekPopManager.swift */,
 				3436AB001C90085300512400 /* PeekPopView.swift */,
 				6E683D171EE6BF6200839287 /* PeekPopControllerView.swift */,
+				6E6800221EE9255600F7B6A7 /* PeekPopViewGestureRecognizer.swift */,
 				3441950F1C93654400EB8038 /* ForceTouchDelegate.swift */,
 				34440E4B1C92A7450055FD4D /* PeekPopExtensions.swift */,
+				6E6800241EE97F0100F7B6A7 /* PeekPopViewController.swift */,
 				3436AB031C900B0C00512400 /* UIImage+ImageEffects.h */,
 				3436AB041C900B0C00512400 /* UIImage+ImageEffects.m */,
 				3436AB071C900B4200512400 /* Accelerate.framework */,
@@ -231,11 +237,13 @@
 				344195101C93654400EB8038 /* ForceTouchDelegate.swift in Sources */,
 				6E683D181EE6BF6200839287 /* PeekPopControllerView.swift in Sources */,
 				34440E4C1C92A7450055FD4D /* PeekPopExtensions.swift in Sources */,
+				6E6800231EE9255600F7B6A7 /* PeekPopViewGestureRecognizer.swift in Sources */,
 				3436AB061C900B0C00512400 /* UIImage+ImageEffects.m in Sources */,
 				343F63C91C94322A00F881BB /* PeekPopManager.swift in Sources */,
 				3436AB011C90085300512400 /* PeekPopView.swift in Sources */,
 				34800C281C8CAE30009929FA /* PeekPopGestureRecognizer.swift in Sources */,
 				34800C201C8C32D8009929FA /* PeekPop.swift in Sources */,
+				6E6800251EE97F0100F7B6A7 /* PeekPopViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

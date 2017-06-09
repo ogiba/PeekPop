@@ -20,6 +20,7 @@ class PeekPopControllerView: PeekPopView {
         self.addSubview(overlayView)
         self.addSubview(sourceImageView)
         self.addSubview(targetPreviewView)
+        self.addSubview(button)
     }
     
     override func didAppear() {
@@ -29,7 +30,6 @@ class PeekPopControllerView: PeekPopView {
         overlayView.frame = self.bounds
         
         targetPreviewView.frame.size = sourceViewRect.size
-        targetPreviewView.imageViewFrame = self.bounds
         if let _vc = targetVC {
             (targetPreviewView as? PeekPopTargetPreviewControllerView)?.targetVC = _vc
             (targetPreviewView as? PeekPopTargetPreviewControllerView)?.controllerContainer.addSubview(_vc.view)
@@ -43,10 +43,28 @@ class PeekPopControllerView: PeekPopView {
         sourceToCenterYDelta = self.bounds.size.height/2 - sourceViewCenter.y
         sourceToTargetWidthDelta = self.bounds.size.width - targePreviewPadding.width - sourceViewRect.size.width
         sourceToTargetHeightDelta = self.bounds.size.height - targePreviewPadding.height - sourceViewRect.size.height
+        
+        setupButton()
     }
     
     override func changeLayer() {
          (targetPreviewView as? PeekPopTargetPreviewControllerView)?.container.layer.cornerRadius = 0
+    }
+    
+    override func moveContainer(by newPosition: CGPoint) {
+        (targetPreviewView as? PeekPopTargetPreviewControllerView)?.container.frame.origin = newPosition
+    }
+    
+    override func moveContainer(byX x: CGFloat, y: CGFloat) {
+        (targetPreviewView as? PeekPopTargetPreviewControllerView)?.container.frame.origin = CGPoint(x: x, y: y)
+    }
+    
+    override func anchorToTop(withValue value: CGFloat = 0) {
+        UIView.animate(withDuration: 0.4) {[weak self]() in
+            (self?.targetPreviewView as? PeekPopTargetPreviewControllerView)?.container.frame.origin = CGPoint(x: 0, y: value)
+        }
+        
+        initializeGestureRecognizer()
     }
 }
 
@@ -58,7 +76,7 @@ class PeekPopTargetPreviewControllerView: PeekPopTargetPreviewView {
     override func layoutSubviews() {
         super.layoutSubviews()
         container.frame = self.bounds
-        controllerContainer.frame = self.bounds//imageViewFrame
+        controllerContainer.frame = self.bounds
         controllerContainer.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
         
         if let _vc = targetVC {
