@@ -112,7 +112,7 @@ class PeekPopView: UIView {
         }
         
         button.isHidden = true
-        button.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.7)
+        button.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.8)
         button.frame = CGRect(x: 0.0, y: 0.0, width: sourceViewRect.size.width + sourceToTargetWidthDelta, height: 50.0)
         button.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height + button.frame.size.height)
         button.layer.cornerRadius = 15.0

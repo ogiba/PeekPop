@@ -22,6 +22,7 @@ open class PeekPop: NSObject {
     
     open var useViewControllerPreview: Bool = false
     open var showActionButton: Bool = false
+    open var blurOnlyCurrentView: Bool = false
     open var buttonAction: (() -> ())?
     
     //MARK: Lifecycle

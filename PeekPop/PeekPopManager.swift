@@ -57,17 +57,28 @@ class PeekPopManager {
         }
         
         peekPopView = view
+
+        let snappedView: UIView
+        var screenShotImage: UIImage?
+        
+        if peekPop.blurOnlyCurrentView {
+            snappedView = viewController.view
+            screenShotImage = snappedView.screenshotView()
+        } else {
+            snappedView = UIScreen.main.snapshotView(afterScreenUpdates: true)
+            screenShotImage = UIView.screenShotMethod()
+        }
         
         // Take view controller screenshot
-        if let viewControllerScreenshot = viewController.view.screenshotView() {
+        if let viewControllerScreenshot = screenShotImage {
             peekPopView?.viewControllerScreenshot = viewControllerScreenshot
             peekPopView?.blurredScreenshots = self.generateBlurredScreenshots(viewControllerScreenshot)
         }
         
         // Take source view screenshot
-        let rect = viewController.view.convert(context.sourceRect, from: context.sourceView)
-        peekPopView?.sourceViewScreenshot = viewController.view.screenshotView(true, rect: rect)
-        peekPopView?.sourceViewRect = viewController.view.convert(rect, to: nil)
+        let rect = snappedView.convert(context.sourceRect, from: context.sourceView)
+        peekPopView?.sourceViewScreenshot = snappedView.screenshotView(true, rect: rect)
+        peekPopView?.sourceViewRect = snappedView.convert(rect, to: nil)
 
         // Take target view controller screenshot
         targetVC.view.frame = viewController.view.bounds
@@ -125,7 +136,6 @@ class PeekPopManager {
         peekPopWindow.makeKeyAndVisible()
         
         if let _context = context, let _vc = peekPopWindow.rootViewController as? PeekPopViewController {
-//            _vc.orientation = _context.delegate?.previewingContext?(_context, peekPopWindow: peekPopWindow)
             _context.delegate?.previewingContext?(_context, peekPopViewController: _vc)
         }
         

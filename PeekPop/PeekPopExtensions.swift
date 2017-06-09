@@ -32,6 +32,18 @@ extension UIView {
             return image
         }
     }
+    
+    class func screenShotMethod() -> UIImage?{
+        let layer = UIApplication.shared.keyWindow!.layer
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(layer.frame.size, false, scale);
+        
+        layer.render(in: UIGraphicsGetCurrentContext()!)
+        let screenshot = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return screenshot
+    }
 
 }
 
