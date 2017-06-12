@@ -61,13 +61,8 @@ class PeekPopManager {
         let snappedView: UIView
         var screenShotImage: UIImage?
         
-        if peekPop.blurOnlyCurrentView {
-            snappedView = viewController.view
-            screenShotImage = snappedView.screenshotView()
-        } else {
-            snappedView = UIScreen.main.snapshotView(afterScreenUpdates: true)
-            screenShotImage = UIView.screenShotMethod()
-        }
+        snappedView = peekPop.blurOnlyCurrentView ? viewController.view : UIApplication.shared.keyWindow ?? viewController.view
+        screenShotImage = snappedView.screenshotView()
         
         // Take view controller screenshot
         if let viewControllerScreenshot = screenShotImage {
