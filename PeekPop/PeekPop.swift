@@ -23,7 +23,6 @@ open class PeekPop: NSObject {
     open var useViewControllerPreview: Bool = false
     open var showActionButton: Bool = false
     open var blurOnlyCurrentView: Bool = false
-    open var buttonAction: (() -> ())?
     
     //MARK: Lifecycle
     
@@ -44,7 +43,7 @@ open class PeekPop: NSObject {
     open func registerForPreviewingWithDelegate(_ delegate: PeekPopPreviewingDelegate, sourceView: UIView) -> PreviewingContext {
         let previewing = PreviewingContext(delegate: delegate, sourceView: sourceView)
         previewingContexts.append(previewing)
-        
+         
         // If force touch is available, use Apple's implementation. Otherwise, use PeekPop's.
         if isForceTouchCapable() {
             let delegate = ForceTouchDelegate(delegate: delegate)
@@ -81,12 +80,6 @@ open class PeekPop: NSObject {
 
 //MARK: PeekPopManager Delegate
 extension PeekPop: PeekPopManagerDelegate {
-    func peekPopManager(closeWithAction: Bool) {
-        if closeWithAction {
-            self.buttonAction?()
-        }
-    }
-    
     func peekPopManager(changeProgress progress: CGFloat) {
         self.peekPopGestureRecognizer?.targetProgress = progress
     }
@@ -125,10 +118,14 @@ public protocol PeekPopPreviewingDelegate: class {
     /// Commit view controller when preview is committed.
     func previewingContext(_ previewingContext: PreviewingContext, commitViewController viewControllerToCommit: UIViewController)
     
-    @objc optional func previewingContext(_ previewingContext: PreviewingContext) -> String?
+    @objc optional func previewingContext(_ previewingContext: PreviewingContext, actionTitleFor targetViewController: UIViewController) -> String?
     
     @objc optional func previewingContext(_ previewingContext: PreviewingContext, peekPopShown: Bool)
     
     @objc optional func previewingContext(_ previewingContext: PreviewingContext, peekPopViewController: PeekPopViewController)
+    
+    @objc optional func previewingContext(_ previewingContext: PreviewingContext, targetViewController: UIViewController, buttonAvability: Bool) -> Bool
+    
+    @objc optional func previewingContext(_ previewingContext: PreviewingContext, targetViewController: UIViewController ) -> (() -> ())?
 }
 

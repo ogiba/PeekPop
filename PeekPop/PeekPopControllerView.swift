@@ -44,7 +44,9 @@ class PeekPopControllerView: PeekPopView {
         sourceToTargetWidthDelta = self.bounds.size.width - targePreviewPadding.width - sourceViewRect.size.width
         sourceToTargetHeightDelta = self.bounds.size.height - targePreviewPadding.height - sourceViewRect.size.height
         
-        setupButton()
+        if buttonAvailable {
+            setupButton()
+        }
     }
     
     override func changeLayer() {

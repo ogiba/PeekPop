@@ -52,8 +52,16 @@ class PeekPopManager {
         view.delegate = self
         view.showActionButton = peekPop.showActionButton
         
-        if let title = context.delegate?.previewingContext?(context) {
+        if let title = context.delegate?.previewingContext?(context, actionTitleFor: targetVC) {
             view.button.setTitle(title, for: .normal)
+        }
+        
+        if let state = context.delegate?.previewingContext?(context, targetViewController: targetVC, buttonAvability: view.buttonAvailable) {
+            view.buttonAvailable = state
+        }
+        
+        if let buttonAction = context.delegate?.previewingContext?(context, targetViewController: targetVC) {
+            view.buttonAction = buttonAction
         }
         
         peekPopView = view
@@ -188,7 +196,7 @@ class PeekPopManager {
 
 extension PeekPopManager: PeekPopViewDelegate {
     func peekPopView(actionTapped tapped: Bool) {
-        self.delegate?.peekPopManager(closeWithAction: true)
+
     }
 
     func peekPopView(initializeGestureRecognizerFor view: PeekPopView) -> Bool {
@@ -200,13 +208,10 @@ extension PeekPopManager: PeekPopViewDelegate {
     }
     
     func peekPopView(tapped button: UIButton) {
-        self.delegate?.peekPopManager(closeWithAction: true)
         peekPopEnded()
     }
 }
 
 protocol PeekPopManagerDelegate {
-    func peekPopManager(closeWithAction: Bool)
-    
     func peekPopManager(changeProgress progress: CGFloat)
 }

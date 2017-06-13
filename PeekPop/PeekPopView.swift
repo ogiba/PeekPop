@@ -24,6 +24,8 @@ class PeekPopView: UIView {
     var showActionButton: Bool = false
     var delegate: PeekPopViewDelegate?
     var gestureInitialized: Bool = false
+    var buttonAvailable: Bool = true
+    var buttonAction: (() -> ())?
 
     //MARK: Screenshots
     
@@ -102,7 +104,9 @@ class PeekPopView: UIView {
         sourceToTargetWidthDelta = self.bounds.size.width - targePreviewPadding.width - sourceViewRect.size.width
         sourceToTargetHeightDelta = self.bounds.size.height - targePreviewPadding.height - sourceViewRect.size.height
         
-        setupButton()
+        if buttonAvailable {
+            setupButton()
+        }
     }
     
     func setupButton() {
@@ -216,6 +220,7 @@ extension PeekPopView {
     }
     
     func buttonAction(_ sender: UIButton) {
+        self.buttonAction?()
         self.delegate?.peekPopView?(tapped: sender)
     }
 }
@@ -270,8 +275,6 @@ class PeekPopTargetPreviewView: UIView {
 
 @objc
 protocol PeekPopViewDelegate: class {
-    func peekPopView(actionTapped tapped: Bool)
-    
     @objc optional func peekPopView(initializeGestureRecognizerFor view: PeekPopView) -> Bool
     
     @objc optional func peekPopView(tapped button: UIButton)

@@ -30,7 +30,6 @@ class PeekPopGestureRecognizer: UIGestureRecognizer
     var startPoint: CGPoint?
     var containerPostionInView: CGPoint?
     var anchoredToTop: Bool = false
-    var buttonAction: (() -> ())?
     
     //MARK: Lifecycle
     

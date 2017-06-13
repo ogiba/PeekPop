@@ -83,7 +83,6 @@ class PeekPopViewGestureRecognizer: UIGestureRecognizer {
             peekPopManager.anchorToTop(withValue: -14.0)
         } else {
             peekPopManager.peekPopEnded()
-            peekPopManager.delegate?.peekPopManager(closeWithAction: false)
         }
     }
 
